@@ -24,13 +24,15 @@ router.route('/')
 
 router.route('/')
     .post(function(req, res){
-        if(!req.body.name){
-          return res.status(400).send({'message': 'Must provide name of event'});
+        if(!req.body.event || !req.body.location){
+          return res.status(400).send({'message': 'Must provide required fields'});
         }
 
         var ticket = new Ticket();
-        ticket.name = req.body.name;
+        ticket.event = req.body.event;
+        ticket.location = req.body.location;
         ticket.price = req.body.price;
+        ticket.date = req.body.date;
         ticket.save(function(err, ticket){
             if(err){
               return res.status(500).send({"error": err});
@@ -46,14 +48,14 @@ router.route('/')
 // -------------
 
 router.route('/:id')
-    .get(function(req, res){
-        Ticket.findById(req.params.id , function(err, data){
-                if(err){
-                    return res.status(500).send({"error": err});
-                }
+  .get(function(req, res){
+      Ticket.findById(req.params.id , function(err, data){
+            if(err){
+                return res.status(500).send({"error": err});
+            }
                 return res.json({ "data": data});
             })
-            .populate('venue'); // changed from 'location' to 'venue'
+            .populate('ticket');
     });
 
 
@@ -79,17 +81,23 @@ router.route('/:id')
 router.route('/:id')
     .put(function(req, res) {
 
-        Ticket.findById(req.params.id , function(err, venue){
+        Ticket.findById(req.params.id , function(err, ticket){
 
             if(err){
                 return res.status(500).send({"error": err});
             }
 
-            if (req.body.name)
-                ticket.name = req.body.name;
+            if (req.body.event)
+                ticket.event = req.body.event;
+
+            if (req.body.location)
+                ticket.location = req.body.location;
 
             if (req.body.price)
-                ticket.price = req.body.location;
+                ticket.price = req.body.price;
+
+            if (req.body.date)
+                ticket.date = req.body.date;
 
             ticket.save(function(err, data){
                 if(err){

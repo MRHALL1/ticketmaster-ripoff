@@ -18,6 +18,10 @@ router.route('/')
             );
     })
 
+// ------------------
+// Add a new location
+// ------------------
+
 router.route('/')
   .post(function(req, res){
     if (!req.body.name || !req.body.zip_code){
@@ -32,10 +36,72 @@ router.route('/')
         return res.status(500).send({"error": err});
       }
 
-      res.send({"data": data, "message": "Venue addes successfully"});
+      res.send({"data": data, "message": "Location added successfully"});
 
     });
 
   });
+
+
+// ---------------
+// Find a location
+// ---------------
+
+router.route('/:id')
+  .get(function(req, res){
+      Location.findById(req.params.id, function(err, data){
+              if(err){
+                  return res.status(500).send({"error": err});
+              }
+              return res.json({ "data": data});
+      })
+            .populate('location');
+  });
+
+// -----------------
+// Delete a location
+// -----------------
+
+router.route('/:id')
+    .delete(function(req, res){
+        Location.remove( {_id: req.params.id}, function(err){
+            if(err){
+                return res.status(500).send({"error": err});
+            }
+            return res.status(200).send({"message": 'Deleted location with id ' + req.params.id});
+        });
+    });
+
+
+// -----------------
+// Update a location
+// -----------------
+
+router.route('/:id')
+    .put(function(req, res) {
+
+      Location.findById(req.params.id , function(err, location){
+
+        if(err){
+          return res.status(500).send({"error": err});
+        }
+
+        if(req.body.zip_code)
+          location.zip_code = body.req.zip_code;
+
+        if(req.body.name)
+          location.name = body.req.name;
+
+        location.save(function(err, data){
+            if(err){
+                return res.status(500).send({"error": err});
+            }
+
+            return res.json({"message": "Record updated successfully", "data": data});
+        });
+      });
+    })
+
+
 
 module.exports = router;

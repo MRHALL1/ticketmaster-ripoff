@@ -5,8 +5,10 @@ var Schema = mongoose.Schema;
 
 
 var TicketSchema = mongoose.Schema({
-  name: { type: String, required: true},
+  event: { type: Schema.Types.ObjectId, ref: 'Event', required: true},
+  location: { type: Schema.Types.ObjectId, ref: 'Location' , required: true},
   price: { type: Number },
+  date: { type: Date },
   modified: { type: Date, default: Date.now },
   created: { type: Date, default: Date.now }
 });
