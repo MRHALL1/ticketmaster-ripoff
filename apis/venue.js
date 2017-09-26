@@ -8,6 +8,7 @@ var Venue = require('../models/Venue');
 router.route('/')
     .get(function(req, res) {
         Venue.find({})
+            .populate('location')
             .exec(function (err, data) {
                     if (err) {
                         return res.status(500).send({"error": err});

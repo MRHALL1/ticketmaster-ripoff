@@ -8,6 +8,8 @@ var Ticket = require('../models/Ticket');
 router.route('/')
     .get(function(req, res) {
         Ticket.find({})
+            .populate('location')
+            .populate('event')
             .exec(function (err, data) {
                     if (err) {
                         return res.status(500).send({"error": err});

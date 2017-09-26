@@ -13,4 +13,4 @@ var TicketSchema = mongoose.Schema({
   created: { type: Date, default: Date.now }
 });
 
-module.export = mongoose.model('Ticket', TicketSchema);
+module.exports = mongoose.model('Ticket', TicketSchema);
